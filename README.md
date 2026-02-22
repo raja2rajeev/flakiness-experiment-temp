@@ -1,4 +1,4 @@
-# Machine Learning–Driven Flaky Test Detection in CI/CD Pipelines
+# Flaky Test Prediction Using Machine Learning in CI/CD
 
 A reproducible experimental framework that applies supervised machine learning to detect and predict flaky tests in CI/CD environments.
 
@@ -11,12 +11,25 @@ A reproducible experimental framework that applies supervised machine learning t
 ![CI](https://github.com/srivastava-rajeev/flakiness-experiment-temp/actions/workflows/python-ci.yml/badge.svg)
 
 ---
+## About This Project
+
+This repository contains an experimental research framework exploring machine learning approaches to predict flaky tests in CI/CD pipelines.
+
+The goal is to proactively identify unstable tests using historical execution patterns, behavioral signals, and statistical modeling techniques.
 
 ## Overview
 
 Flaky tests introduce instability in CI/CD pipelines, causing false failures, increased triage effort, delayed releases, and reduced confidence in automation systems. Traditional retry mechanisms often mask symptoms rather than addressing root causes.
 
 This project demonstrates how supervised machine learning can proactively detect flaky behavior using historical execution data, enabling more reliable and intelligent CI pipelines.
+
+## Project Structure
+
+- data/                # Test execution logs & synthetic datasets
+- feature_engineering/ # Feature extraction scripts
+- models/              # ML training & evaluation
+- ci_integration/      # CI/CD experiment scripts
+- notebooks/           # Exploratory analysis
 
 ---
 
