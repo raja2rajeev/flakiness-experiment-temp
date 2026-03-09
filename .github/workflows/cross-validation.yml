@@ -47,6 +47,9 @@ jobs:
           print(f'Validated {len(files)} Python files in current repo.')
           PY
 
+      - name: Install synthetic data dependencies (current repo)
+        run: pip install numpy pandas
+
       - name: Generate current repo synthetic logs smoke artifact
         run: python feature_engineering/generate_synthetic_logs.py
 
