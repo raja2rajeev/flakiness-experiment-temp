@@ -315,6 +315,22 @@ npm install
 
 ---
 
+## Cross-Repo Validation
+
+This repository includes `.github/workflows/cross-validation.yml` to run lightweight smoke checks against:
+
+- this repo (`flaky-test-prediction-ml`)
+- peer repo (`intelligent-test-selection-ml`)
+
+For new repositories, copy these workflow files before first PR merge:
+
+- `.github/workflows/quality-gate.yml`
+- `.github/workflows/codeql.yml`
+- `.github/workflows/dependency-review.yml`
+- `.github/workflows/cross-validation.yml`
+
+---
+
 ## License
 
 MIT License

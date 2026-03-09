@@ -1,0 +1,100 @@
+name: Cross Validation
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  peer-intelligent-smoke:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout current repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate current repo Python syntax
+        run: |
+          python - <<'PY'
+          import pathlib
+          import py_compile
+
+          roots = [
+              'ml',
+              'models',
+              'feature_engineering',
+              'ci_integration',
+          ]
+          files = []
+          for root in roots:
+              p = pathlib.Path(root)
+              if p.exists():
+                  files.extend(p.rglob('*.py'))
+
+          if not files:
+              raise SystemExit('No Python files found for smoke validation.')
+
+          for f in files:
+              py_compile.compile(str(f), doraise=True)
+
+          print(f'Validated {len(files)} Python files in current repo.')
+          PY
+
+      - name: Install synthetic data dependencies (current repo)
+        run: pip install numpy pandas
+
+      - name: Generate current repo synthetic logs smoke artifact
+        run: python feature_engineering/generate_synthetic_logs.py
+
+      - name: Checkout peer repo (intelligent-test-selection-ml)
+        uses: actions/checkout@v4
+        with:
+          repository: srivastava-rajeev/intelligent-test-selection-ml
+          ref: main
+          path: peer-intelligent
+
+      - name: Validate peer repo Python syntax
+        run: |
+          python - <<'PY'
+          import pathlib
+          import py_compile
+
+          roots = [
+              'peer-intelligent/ml',
+              'peer-intelligent/ci',
+          ]
+          files = []
+          for root in roots:
+              p = pathlib.Path(root)
+              if p.exists():
+                  files.extend(p.rglob('*.py'))
+
+          if not files:
+              raise SystemExit('No Python files found in peer repo.')
+
+          for f in files:
+              py_compile.compile(str(f), doraise=True)
+
+          print(f'Validated {len(files)} Python files in peer repo.')
+          PY
+
+      - name: Generate peer synthetic history smoke artifact
+        run: |
+          cd peer-intelligent
+          python ml/generate_synthetic_history.py
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+
+      - name: Validate peer Node runner syntax
+        run: node --check peer-intelligent/tests/playwright/run-selected.js
